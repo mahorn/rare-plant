@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset=utf-8 />
+    <meta charset=utf-8/>
     <title>Distribution of Rare Plants in Kentucky</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
 
     <script src='https://code.jquery.com/jquery-1.12.0.min.js'></script>
-    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
-    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
     
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-    <link href='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet' />
-    <link href='https://fonts.googleapis.com/css?family=Pompiere' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css"/>
+    <link href='https://api.mapbox.com/mapbox.js/v2.2.4/mapbox.css' rel='stylesheet'/>
+    <link href="https://fonts.googleapis.com/css?family=Pompiere" rel="stylesheet" type="text/css">
     
 <style>
 
@@ -22,72 +22,109 @@
             margin: 0;
             bottom: 0;
             font-family: 'Pompiere', cursive;
-            background: url(plant.png);  
+            background: url(plant.png);   
         }
-        h1, #county-plants {
+        h1 {
             position: absolute;
-            left: 60px;
-            top: 10px;
+            left: 80px;
+            top: 0;
             font-family: 'Pompiere', cursive;
             font-size: 3em;
             font-weight: 300;
             color: #A5C05B;  
         }
-        #county-plants {
-            top: 160px;
-            left: 90px;
-            font-size: 1.8em;
-            z-index: 3;
-            color: #A5C05B;
+        h2 {
+            position: absolute;
+            left: 80px;
+            top: 162px;
+            font-family: 'Pompiere', cursive;
+            font-size: 1.5em;
+            font-weight: 300;
+            color: #7BA4A8;  
+            z-index: 1;
         }
         #map {
             position: absolute;
-            top: 140px;
+            top: 120px;
             bottom: 0;
-            width: 100%; 
+            width: 100%;    
         }
+
         footer {
             position: absolute;
             width: 100%;
-            height: 8%;
+            height: 70px;
             bottom: 0;
-            color: #7BA4A8;
+            color: #232122;
             background: #A5C05B;
+            z-index: 2;
         }
-        p {     
-            position: absolute;
+        p { 
+            position: relative;
             font-size: 1em;
-            font-weight: 500;
-            right: 30px;
-            bottom: 20px;
+            font-weight: 300;
+            left: 80px;
+            line-height: 0.5;
+        }
+        #greeting {
+            position: absolute;
+            font-family: 'Pompiere', cursive;
+            color: #A3A599;
+            font-size: 1em;
+            font-weight: 300;
+            right: 50%;
+            top: 35%;
+            z-index: 3;
+        }
+        #greeting li:hover { 
+            cursor: pointer;      
+        }
+        #greetingPlant {
+            position: relative;
+            font-family: 'Pompiere', cursive;
+            color: #A3A599;
+            font-size: 1em;
+            font-weight: 300;
+            left: 12%;
+            top: 0;
+        }
+        #county-plants {
+            margin-top: 57px;
+            margin-left: 28px;
+            margin-bottom: 13px;
+            font-size: 1.3em;
+            z-index: 4;
+            color: #A5C05B;
+            font-weight: 300;
         }
         #info {
-            position: absolute;
-            font-size: 1em;
-            max-width: 245px; 
+            font-size: .9em;
+            max-width: 180px; 
             display: none;
             background: rgba(25,25,25,0.2);
             border-radius: 5px;
-            padding: 14px 3%;
             overflow-y: scroll;
-            height: 343px;
             color: #7BA4A8;
-            z-index: 2;
-            left: 90px;
-            top: 232px;
+            z-index: 5;
+            margin-top: 0;
+            height: 426px
+        }
+        #info li:hover {
+            text-decoration: underline;
+            cursor: pointer;
         }
         #plants {
             position: absolute;
             background: rgba(25,25,25,0.2);
             border-radius: 5px;
-            padding: 14px 3%;
-            width: 198px;
-            top: 40px;
-            right: 30px;
-            height: 463px;
+            padding: 8px 0 8px 16px;
+            width: 180px;
+            top: 200px;
+            left: 80px;
+            height: 450px;
             overflow-y: scroll;
             color: #7BA4A8;
-            z-index: 1;
+            z-index: 5;
         }
         #plants li {
             font-size: .9em;
@@ -95,28 +132,156 @@
         #plants li:hover {
             text-decoration: underline;
             cursor: pointer;
-            font-size: 1.2em;
         }
+        #greetingList {
+            position: absolute;
+            font-family: 'Pompiere', cursive;
+            color: #A3A599;
+            font-size: 1em;
+            font-weight: 300;
+            left: 80px;
+            top: 130px;
+            z-index: 3;
+        }
+        #content {
+            z-index: 14;
+            width: 1200px;
+            height: 260px;
+            padding: 10px;
+            margin: 70px;
+            position: absolute;
+            top: 670px;
+            left: 0;
+            color: #A5C05B;
+        }
+        #side-panel {
+            position: absolute;
+            right: 0;
+            left: 78%;
+            top: 140px;
+            bottom: 0;
+            width: 28%;
+            overflow-y: scroll;
+            z-index: 5;   
+            display: none;
+        }
+        #side-panel h2 {
+            position: absolute;
+            top: 26px;
+            left: 12px;
+            margin: 12px 0 8px; 
+            padding: 0 25px 0 15px;
+            color: #7BA4A8;
+            text-align: left;
+            font-size: 1.5em; 
+            width: 300px;
+        }
+        #side-panel p {
+            position: absolute;
+            margin: 12px 0 8px; 
+            padding: 0 25px 0 15px;
+            color: #b4b4b4;
+            text-align: left;
+            font-size: 1em;
+            font-weight: 300;
+            width: 200px;
+        }
+        #side-panel p:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        #side-panel  div {
+            margin: 4px 26px 0;
+        }
+        #species {
+            font-size: 1em;
+            color: #A3A599;
+            z-index: 6;
+            padding: 0 0 6px 0;
+        }  
+        #family {
+            font-size: 1em;
+            color: #A3A599;
+            z-index: 6; 
+            padding: 0 0 6px 0;
+        }
+        #habitat {
+            font-size: 1em;
+            z-index: 6;
+            color: #A3A599; 
+            padding: 0 0 6px 0;
+        }
+        #flowering {  
+            font-size: 1em;
+            z-index: 6;
+            color: #A3A599; 
+            padding: 0 0 6px 0;
+        }   
+        #chart {
+            font-size: 1em;
+            z-index: 6;
+            color: #A3A599;
+            padding: 0 0 6px 0;
+        }
+        #type {
+            font-size: 1em;
+            z-index: 6;
+            color: #A3A599;
+            padding: 0 0 6px 0;
+        }
+        #name {
+            font-size: 1em;
+            z-index: 6;
+            color: #A3A599;
+            padding: 0 0 6px 0;
+        }
+        a {
+            color: #232122;
+        }
+    
     </style>
 </head>
 <body>
+    
     <h1>Distribution of Rare Plants in Kentucky</h1>
-    <ul id="county-plants"></ul>
+    <h2>Species by Common Name</h2>
+    
+    <div id="side-panel"> 
+        <h2>Species by Scientific Name</h2>
+        <div id="greetingPlant">*Scroll down and/or click over species name</div>
+        <h3 id="county-plants"></h3>
+        <ul id="info"></ul> 
+        <div id="name"></div>
+    </div>
+    
+    <div id="content">
+        <div id="species"></div>
+        <div id="family"></div>
+        <div id="type"></div>
+        <div id="habitat"></div>
+        <div id="flowering"></div>
+        <div id="chart"></div>
+    </div>
+
+    <ul id="greeting"></ul>
+    <ul id="greetingList"></ul>
     <ul id="plants"></ul>
-    <div id="info"></div>
     <div id="map"></div>
+    
     <footer>
         <p>Map authored by Maria Renee Horn</p>
+        <p>Data: <a href="http://eppcapp.ky.gov/nprareplants/">Kentucky State Nature Preserves Commission.</a></p>
     </footer>
-
+    
     <script>
         
         var options = {
-            center: [38.2, -85.8],
-            zoom: 7,
+            center: [38.2, -84.4],
+            zoom:7,
             minZoom: 7,
-            maxZoom: 10,
-            dragging: true,
+            maxZoom: 8,
+            maxBounds: L.latLngBounds([37.4,-85], [37,-86.4]),
             zoomControl: true,
             attributionControl: false
         }
@@ -131,6 +296,23 @@
         
         map.addLayer(tiles);
         
+        map.on('mouseover', function(e) {
+            
+            var greeting = "* Please click on a county";
+            var hovering = "* Scroll down and/or hover over species name to see distribution";
+            
+                $("#greeting").show(); 
+                $("#greetingList").show();
+                $('#greeting').text(greeting);
+                $('#greetingList').text(hovering);
+        })
+        
+        map.on('mouseout', function(e) { 
+            
+                $("#greeting").hide();
+                $("#greetingList").hide();
+        })
+       
         queue()
             .defer(d3.csv, 'data_project.csv')
             .defer(d3.json, 'ky-counties.json')
@@ -141,7 +323,7 @@
             counties.features.forEach(function(county,i) {
                 
                 county.properties.plants = {};
-                    
+                
                 data.forEach(function(d,j){
                         
                     if(county.properties["STATE_FIP"] + 
@@ -149,9 +331,9 @@
                             
                        county.properties.plants[j] = d;
                     }
-                });
-            });
-         
+                })
+            })
+               
             var plantsData = {}
              
                 data.forEach(function(d,k){
@@ -160,9 +342,10 @@
                         plantsData[d.CNAME].counties.push(d.FIPS_ID);
                     } else {
                         plantsData[d.CNAME] = {counties:[d.FIPS_ID]};
-                    }  
-                });
-         
+                    } 
+                       
+                })
+            
             var plantsList = d3.select('#plants'),
                 
                 listItems = '';
@@ -174,6 +357,7 @@
                         plantsList.html(listItems);
          
                         makeMap(counties, plantsData);
+                        createInfoPanel();
         } 
         
         function makeMap(counties, plantsData) {
@@ -183,87 +367,129 @@
                 style: function(feature) {
                     
                     return {
-                        color: '#353C3F',
-                        weight: 1,
-                        opacity: 0.7,
+                        color: '#A3A599',
+                        weight: 0.5,
+                        opacity: 0.5,
                         fillOpacity: 1,
                         fillColor: '#080706'
                     }
-                },
-
-                 onEachFeature: function(feature, layer) {
-                     
-                      var props = layer.feature.properties;
-                     
-                      layer.on('click', function(e) {
-                          
-                        $("#county-plants").show();
-                        $('#info').show();
-                        $("#county-plants").text(props.NAME + ' County:');
-                        $('#info').html(getPlants(props.plants)) 
-                         
-                        layer.setStyle({ fillColor: '#A5C05B', fillOpacity: 1});
-                                      
-                      });
-                      
-//                        layer.off("click", function(e) {
-////                       
-/////                        layer.on('mouseout', function(){
-////////                            
-//                            $("#county-plants").hide();
-//                            $('#info').hide();
-////////                        
-//                        layer.setStyle({ fillColor: '#080706', fillOpacity: 1});
-////////                       
-//                        });
-//////                        
-//////                        var popupContent = layer.feature.properties.NAME;
-//////                            layer.bindPopup(popupContent + " County");           
-                    }
+                }
                
             }).addTo(map);
+
+            
+            countyPlants.eachLayer(function(layer) {
+               
+                var props = layer.feature.properties;
+                console.log(props);
+
+                layer.on('click', function(e) {
+
+                    countyPlants.setStyle({ fillColor: 'black' });
+                    
+                    $("#side-panel").show();
+                    $("#county-plants").show();
+                    $("#info").show(); 
+                    $("#greetingPlant").show();   
+                    $("#county-plants").text(props.NAME + ' County:');
+                    $('#info').html(getPlants(props.plants)); 
+
+                    layer.setStyle({ fillColor: '#A5C05B' });
+                    
+                })
+            
+            })
+            
+            map.on('click', function() {
+                countyPlants.setStyle({ fillColor: 'black' });
+                $("#side-panel").hide();
+                $("#county-plants").hide();
+                $("#info").hide(); 
+                $("#greetingPlant").hide();  
+            })
             
             highlightCounties();  
               
         }
                    
-         function getPlants(plants) {
-             
+         function getPlants(plants) {  
             var outputText = '';
-             
                 for (var plant in plants) {
-                    
                     outputText += '<li>' + plants[plant].SNAME + '</li>'
                 }
             
             return outputText;     
         }
-        
+            
         function highlightCounties() {
-            
             var list = $('#plants');
+                list.on('mouseover', function(e) {   
+            var selectedPlant = $(e.target).html(); 
+                countyPlants.setStyle({fillColor: '#080706', fillOpacity: 1, color: '#A3A599', weight: 0.5, opacity: 0.5});  
+                countyPlants.eachLayer (function(layer) { 
             
-                list.on('mouseover', function(e) {
-                    
-            var selectedPlant = $(e.target).html();
-                    
-                countyPlants.setStyle({fillColor: '#080706', fillOpacity: 1});
-                    
-                countyPlants.eachLayer (function(layer) {
-                    
-            var plants = layer.feature.properties.plants;
-                
-                for(var plant in plants) {
-                    
+            var plants = layer.feature.properties.plants;        
+                for(var plant in plants) { 
                     if(selectedPlant === plants[plant].CNAME) {
+                        layer.setStyle({fillColor: '#7BA4A8', fillOpacity: 1, color: '#080706', weight: 0.5, opacity: 0.5});
                         
-                        layer.setStyle({fillColor: '#7BA4A8', fillOpacity: 1});
-                        }
+                                $("#species").show();
+                                $("#family").show();
+                                $("#type").show();
+                                $("#habitat").show();
+                                $("#flowering").show();
+                                $("#chart").show();
+                                $('#species').text("Scientific Name: " + plants[plant].SNAME);
+                                $('#family').text("Family: " + plants[plant].FAMILY);
+                                $('#habitat').text("Habitat: " + plants[plant].HABITAT);
+                                $('#type').text("Type: " + plants[plant].TYPE);
+                                $('#flowering').text("Flowering Period: " + plants[plant].FLOWERING);
+                                $('#chart').text("Diagram Chart: " + plants[plant].DIAGCHARS);
+                        } 
                     }           
-                });
-            });
+                })
+            }) 
+            
+                list.on('mouseout', function(e) { 
+                                $("#species").hide();
+                                $("#family").hide();
+                                $("#type").hide();
+                                $("#habitat").hide();
+                                $("#flowering").hide();
+                                $("#chart").hide();
+                
+                 countyPlants.setStyle({fillColor: '#080706', fillOpacity: 1, color: '#A3A599', weight: 0.5, opacity: 0.5});  
+            })
         }
-       
+        
+        function createInfoPanel(){
+            
+            var info = $('#info');
+            
+            info.on('click', function (e) {  
+                
+                var selectedPlant = $(e.target).html(); 
+                
+            countyPlants.eachLayer (function(layer) {   
+                
+                var plants = layer.feature.properties.plants;
+
+                    for(var plant in plants) { 
+                        
+                        if (selectedPlant === plants[plant].SNAME) {
+                    
+                            $("#name").show();
+                            $('#name').text("Commun Name: " + plants[plant].CNAME);     
+                        }
+                        
+                        info.on('mouseout', function(e) { 
+                            $("#name").hide();
+                        })
+                    }
+                }) 
+            })
+        }
+                                           
 </script>
 </body>
 </html>
